@@ -44,33 +44,33 @@ cd openclaw-laravel
 
 Create PHP 8.4 backed enums:
 
-| File | Cases |
-|---|---|
-| `app/Enums/ChannelType.php` | `Telegram`, `WebChat` (start small, extend later) |
-| `app/Enums/TurnRole.php` | `User`, `Assistant`, `ToolCall`, `ToolResult` |
-| `app/Enums/DeliveryMode.php` | `Async`, `BestEffort`, `Strict` |
-| `app/Enums/PairingPolicy.php` | `Pairing`, `Allowlist`, `Open` |
+| File                          | Cases                                             |
+|-------------------------------|---------------------------------------------------|
+| `app/Enums/ChannelType.php`   | `Telegram`, `WebChat` (start small, extend later) |
+| `app/Enums/TurnRole.php`      | `User`, `Assistant`, `ToolCall`, `ToolResult`     |
+| `app/Enums/DeliveryMode.php`  | `Async`, `BestEffort`, `Strict`                   |
+| `app/Enums/PairingPolicy.php` | `Pairing`, `Allowlist`, `Open`                    |
 
 #### 0.3 Migrations
 
 Create all migrations upfront (even if models aren't used until later phases). This locks in the schema early and prevents migration churn.
 
-| Migration | Key Columns |
-|---|---|
-| `create_agents_table` | `id`, `name`, `description`, `config` (JSON), `is_active` |
-| `create_sessions_table` | `id`, `agent_id` (FK), `key`, `metadata` (JSON) |
-| `create_turns_table` | `id`, `session_id` (FK), `role` (enum), `content` (JSON), `created_at` |
-| `create_channels_table` | `id`, `type` (enum), `credentials` (encrypted), `is_active`, `metadata` (JSON) |
-| `create_auth_profiles_table` | `id`, `provider`, `credentials` (encrypted), `is_active`, `cooldown_until`, `requests_today` |
-| `create_webhooks_table` | `id`, `agent_id` (FK), `session_key`, `token`, `is_active` |
-| `create_cron_jobs_table` | `id`, `agent_id` (FK), `schedule`, `action`, `delivery_mode`, `cooldown_minutes`, `is_active`, `last_run_at` |
-| `create_cron_executions_table` | `id`, `cron_job_id` (FK), `status`, `output`, `executed_at` |
-| `create_paired_senders_table` | `id`, `sender_id`, `channel_type`, `pairing_code`, `approved_at` |
-| `create_embeddings_table` | `id`, `agent_id` (FK), `session_id` (FK), `turn_id` (FK), `content`, `vector` (BLOB), `content_hash` |
-| `create_skills_table` | `id`, `name`, `version`, `prompt_fragment`, `tool_class`, `is_active` |
-| `create_agent_skill_table` | `agent_id`, `skill_id` (pivot) |
-| `create_plugins_table` | `id`, `name`, `version`, `service_provider`, `is_active` |
-| `create_jobs_table` | Laravel queue table |
+| Migration                      | Key Columns                                                                                                  |
+|--------------------------------|--------------------------------------------------------------------------------------------------------------|
+| `create_agents_table`          | `id`, `name`, `description`, `config` (JSON), `is_active`                                                    |
+| `create_sessions_table`        | `id`, `agent_id` (FK), `key`, `metadata` (JSON)                                                              |
+| `create_turns_table`           | `id`, `session_id` (FK), `role` (enum), `content` (JSON), `created_at`                                       |
+| `create_channels_table`        | `id`, `type` (enum), `credentials` (encrypted), `is_active`, `metadata` (JSON)                               |
+| `create_auth_profiles_table`   | `id`, `provider`, `credentials` (encrypted), `is_active`, `cooldown_until`, `requests_today`                 |
+| `create_webhooks_table`        | `id`, `agent_id` (FK), `session_key`, `token`, `is_active`                                                   |
+| `create_cron_jobs_table`       | `id`, `agent_id` (FK), `schedule`, `action`, `delivery_mode`, `cooldown_minutes`, `is_active`, `last_run_at` |
+| `create_cron_executions_table` | `id`, `cron_job_id` (FK), `status`, `output`, `executed_at`                                                  |
+| `create_paired_senders_table`  | `id`, `sender_id`, `channel_type`, `pairing_code`, `approved_at`                                             |
+| `create_embeddings_table`      | `id`, `agent_id` (FK), `session_id` (FK), `turn_id` (FK), `content`, `vector` (BLOB), `content_hash`         |
+| `create_skills_table`          | `id`, `name`, `version`, `prompt_fragment`, `tool_class`, `is_active`                                        |
+| `create_agent_skill_table`     | `agent_id`, `skill_id` (pivot)                                                                               |
+| `create_plugins_table`         | `id`, `name`, `version`, `service_provider`, `is_active`                                                     |
+| `create_jobs_table`            | Laravel queue table                                                                                          |
 
 Run `php artisan migrate`.
 
@@ -93,22 +93,22 @@ Create all models with relationships, casts, and fillable attributes. No busines
 
 #### 0.5 Contracts (Interfaces)
 
-| File | Methods |
-|---|---|
-| `app/Contracts/ChannelDriver.php` | `start()`, `stop()`, `normalizeInbound()`, `send()`, `status()` |
-| `app/Contracts/LLMProvider.php` | `chat()`, `stream()` |
-| `app/Contracts/EmbeddingProvider.php` | `embed()`, `batchEmbed()` |
-| `app/Contracts/Tool.php` | `name()`, `schema()`, `execute()` |
+| File                                  | Methods                                                         |
+|---------------------------------------|-----------------------------------------------------------------|
+| `app/Contracts/ChannelDriver.php`     | `start()`, `stop()`, `normalizeInbound()`, `send()`, `status()` |
+| `app/Contracts/LLMProvider.php`       | `chat()`, `stream()`                                            |
+| `app/Contracts/EmbeddingProvider.php` | `embed()`, `batchEmbed()`                                       |
+| `app/Contracts/Tool.php`              | `name()`, `schema()`, `execute()`                               |
 
 #### 0.6 Config Files
 
-| File | Contents |
-|---|---|
-| `config/openclaw.php` | Gateway port/token, debounce_ms, pairing_policy |
-| `config/agents.php` | Default agent definition (name, model, tool policy) |
-| `config/channels.php` | Per-channel credentials (empty, from .env) |
-| `config/models.php` | Provider configs + failover_order |
-| `config/tools.php` | Global tool settings (bash timeout, max output) |
+| File                  | Contents                                            |
+|-----------------------|-----------------------------------------------------|
+| `config/openclaw.php` | Gateway port/token, debounce_ms, pairing_policy     |
+| `config/agents.php`   | Default agent definition (name, model, tool policy) |
+| `config/channels.php` | Per-channel credentials (empty, from .env)          |
+| `config/models.php`   | Provider configs + failover_order                   |
+| `config/tools.php`    | Global tool settings (bash timeout, max output)     |
 
 #### 0.7 Data Transfer Objects
 
@@ -286,12 +286,12 @@ A simple built-in web UI — no external service:
 
 Wire up the inbound pipeline from the architecture doc:
 
-| Listener | Phase 2 Scope |
-|---|---|
-| `NormalizeMessage` | Already normalized by driver — pass through |
+| Listener           | Phase 2 Scope                                                             |
+|--------------------|---------------------------------------------------------------------------|
+| `NormalizeMessage` | Already normalized by driver — pass through                               |
 | `EnforceAllowlist` | Check `PairedSender::isAuthorized()` — reject unknowns if policy requires |
-| `ResolveSession` | Find or create session for this sender + agent |
-| `DebounceMessages` | Dispatch `ProcessInboundMessage` with configurable delay |
+| `ResolveSession`   | Find or create session for this sender + agent                            |
+| `DebounceMessages` | Dispatch `ProcessInboundMessage` with configurable delay                  |
 
 Listeners not yet needed: `DetectMentionGating` (no groups yet), `DetectCommand` (no commands yet), `StageMedia` (no media yet).
 
@@ -366,12 +366,12 @@ php artisan install:broadcasting
 
 #### 3.2 Broadcast Events
 
-| Event | Payload | Broadcast On |
-|---|---|---|
-| `AgentResponseChunk` | blockType, payload | `session.{agentId}.{sessionKey}` |
-| `AgentTyping` | agentId, isTyping | `session.{agentId}.{sessionKey}` |
-| `ChannelStatusChanged` | channelType, status | `gateway` |
-| `SessionCreated` | session data | `agent.{agentId}` |
+| Event                  | Payload             | Broadcast On                     |
+|------------------------|---------------------|----------------------------------|
+| `AgentResponseChunk`   | blockType, payload  | `session.{agentId}.{sessionKey}` |
+| `AgentTyping`          | agentId, isTyping   | `session.{agentId}.{sessionKey}` |
+| `ChannelStatusChanged` | channelType, status | `gateway`                        |
+| `SessionCreated`       | session data        | `agent.{agentId}`                |
 
 #### 3.3 Update AgentRunner for Streaming
 
@@ -442,10 +442,10 @@ php artisan reverb:start &
 
 #### 4.2 Built-in Tools
 
-| Tool | Class | Description |
-|---|---|---|
-| `system.run` | `BashTool` | Sandboxed shell execution via `Process` facade |
-| `messaging.send` | `MessagingTool` | Send message via any connected channel |
+| Tool             | Class           | Description                                    |
+|------------------|-----------------|------------------------------------------------|
+| `system.run`     | `BashTool`      | Sandboxed shell execution via `Process` facade |
+| `messaging.send` | `MessagingTool` | Send message via any connected channel         |
 
 **BashTool:**
 
@@ -497,10 +497,10 @@ In agent config (`config` JSON column):
 
 #### 4.6 Events
 
-| Event | Fires When |
-|---|---|
-| `ToolExecuting` | Before tool runs (listeners can log, block, gate) |
-| `ToolExecuted` | After tool completes (listeners can log, post-process) |
+| Event           | Fires When                                             |
+|-----------------|--------------------------------------------------------|
+| `ToolExecuting` | Before tool runs (listeners can log, block, gate)      |
+| `ToolExecuted`  | After tool completes (listeners can log, post-process) |
 
 #### 4.7 Artisan: `tool:list`
 
@@ -933,12 +933,12 @@ docker compose up -d
 
 #### 9.1 Additional Channel Drivers
 
-| Channel | Driver | Notes |
-|---|---|---|
-| **Discord** | `DiscordDriver` | Uses Go channel-bridge sidecar (persistent WS) |
-| **Slack** | `SlackDriver` | Socket Mode via Slack Bolt PHP or webhook mode |
+| Channel      | Driver           | Notes                                             |
+|--------------|------------------|---------------------------------------------------|
+| **Discord**  | `DiscordDriver`  | Uses Go channel-bridge sidecar (persistent WS)    |
+| **Slack**    | `SlackDriver`    | Socket Mode via Slack Bolt PHP or webhook mode    |
 | **WhatsApp** | `WhatsAppDriver` | Via Go channel-bridge sidecar (Baileys/whatsmeow) |
-| **Signal** | `SignalDriver` | Via signal-cli subprocess |
+| **Signal**   | `SignalDriver`   | Via signal-cli subprocess                         |
 
 For each:
 - Implement `ChannelDriver` contract
@@ -1111,17 +1111,17 @@ Key insight: **Phases 2, 4, and 5 are independent** after Phase 1 and can be dev
 
 ## Milestone Summary
 
-| Milestone | What You Can Do | Phases |
-|---|---|---|
-| **M1: CLI Agent** | Chat with AI via terminal | 0 + 1 |
-| **M2: Two Channels** | Reach the agent from Telegram and a web page | + 2 |
-| **M3: Real-Time** | Streaming responses, REST API, WebSocket | + 3 |
-| **M4: Tool Use** | Agent executes commands, sends messages | + 4 |
-| **M5: Memory** | Agent recalls past conversations | + 5 |
-| **M6: Multi-Agent** | Multiple personas, skills, plugins | + 6 |
-| **M7: Triggers** | Cron, webhooks, external events | + 7 |
-| **M8: Production** | FrankenPHP, Go sidecars, Docker | + 8 |
-| **M9: Full Parity** | All channels, media, compaction, failover | + 9 |
+| Milestone            | What You Can Do                              | Phases |
+|----------------------|----------------------------------------------|--------|
+| **M1: CLI Agent**    | Chat with AI via terminal                    | 0 + 1  |
+| **M2: Two Channels** | Reach the agent from Telegram and a web page | + 2    |
+| **M3: Real-Time**    | Streaming responses, REST API, WebSocket     | + 3    |
+| **M4: Tool Use**     | Agent executes commands, sends messages      | + 4    |
+| **M5: Memory**       | Agent recalls past conversations             | + 5    |
+| **M6: Multi-Agent**  | Multiple personas, skills, plugins           | + 6    |
+| **M7: Triggers**     | Cron, webhooks, external events              | + 7    |
+| **M8: Production**   | FrankenPHP, Go sidecars, Docker              | + 8    |
+| **M9: Full Parity**  | All channels, media, compaction, failover    | + 9    |
 
 ---
 

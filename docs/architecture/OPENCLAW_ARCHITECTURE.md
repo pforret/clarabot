@@ -47,17 +47,17 @@ The **Gateway** is the central orchestration hub. It runs as a long-lived server
 
 ### Responsibilities
 
-| Concern | Description |
-|---|---|
-| **WebSocket Server** | Accepts client connections (CLI, native apps, web UI) using a JSON-RPC 2.0 protocol over WebSocket |
-| **Channel Lifecycle** | Starts, stops, and authenticates channel connections (WhatsApp, Telegram, Slack, etc.) |
-| **Message Routing** | Routes inbound messages to the correct agent and session based on sender, channel, and group rules |
-| **HTTP Endpoints** | Exposes HTTP routes for webhook ingestion, cron callbacks, health checks, and plugin endpoints |
-| **Config Management** | Loads, validates, hot-reloads configuration without restart |
-| **Device Discovery** | Discovers and pairs local devices (phones, desktops) via mDNS / Bonjour |
-| **Presence Tracking** | Tracks online/offline state of agents, channels, and connected clients |
-| **Plugin Host** | Loads and manages the lifecycle of plugins (channels, skills, hooks) |
-| **Networking** | Optional exposure via Tailscale Serve/Funnel for remote access |
+| Concern               | Description                                                                                        |
+|-----------------------|----------------------------------------------------------------------------------------------------|
+| **WebSocket Server**  | Accepts client connections (CLI, native apps, web UI) using a JSON-RPC 2.0 protocol over WebSocket |
+| **Channel Lifecycle** | Starts, stops, and authenticates channel connections (WhatsApp, Telegram, Slack, etc.)             |
+| **Message Routing**   | Routes inbound messages to the correct agent and session based on sender, channel, and group rules |
+| **HTTP Endpoints**    | Exposes HTTP routes for webhook ingestion, cron callbacks, health checks, and plugin endpoints     |
+| **Config Management** | Loads, validates, hot-reloads configuration without restart                                        |
+| **Device Discovery**  | Discovers and pairs local devices (phones, desktops) via mDNS / Bonjour                            |
+| **Presence Tracking** | Tracks online/offline state of agents, channels, and connected clients                             |
+| **Plugin Host**       | Loads and manages the lifecycle of plugins (channels, skills, hooks)                               |
+| **Networking**        | Optional exposure via Tailscale Serve/Funnel for remote access                                     |
 
 ### Protocol
 
@@ -97,19 +97,19 @@ Channels are **pluggable adapters** that bridge external messaging platforms int
 
 ### Supported Channels
 
-| Channel | Connection Method |
-|---|---|
-| WhatsApp | Persistent WebSocket (Baileys) |
-| Telegram | Long-polling / Webhook (Bot API) |
-| Discord | WebSocket gateway (Bot) |
-| Slack | Socket Mode / Events API (Bot) |
-| Signal | Local CLI bridge |
-| iMessage | Local BlueBubbles bridge |
-| Google Chat | API + Pub/Sub |
-| Microsoft Teams | Graph API |
-| Matrix | Client-Server API |
-| WebChat | Built-in web UI |
-| *Others* | Via plugin/extension system |
+| Channel         | Connection Method                |
+|-----------------|----------------------------------|
+| WhatsApp        | Persistent WebSocket (Baileys)   |
+| Telegram        | Long-polling / Webhook (Bot API) |
+| Discord         | WebSocket gateway (Bot)          |
+| Slack           | Socket Mode / Events API (Bot)   |
+| Signal          | Local CLI bridge                 |
+| iMessage        | Local BlueBubbles bridge         |
+| Google Chat     | API + Pub/Sub                    |
+| Microsoft Teams | Graph API                        |
+| Matrix          | Client-Server API                |
+| WebChat         | Built-in web UI                  |
+| *Others*        | Via plugin/extension system      |
 
 ### Channel Plugin Interface
 
@@ -232,21 +232,21 @@ Tools are capabilities that the agent can invoke during a conversation. Each too
 
 ### Built-in Tools
 
-| Tool | Purpose |
-|---|---|
-| `system.run` | Execute shell commands in a sandboxed PTY |
-| `browser.action` | Automate a headless browser (navigate, click, screenshot, scrape) |
-| `canvas.eval` | Update a live canvas UI (render HTML/JS content) |
-| `canvas.reset` | Clear the canvas |
-| `messaging.send` | Send a message via any connected channel |
-| `sessions.list` | List available sessions |
-| `sessions.get` | Read session history |
-| `sessions.update` | Modify session metadata |
-| `sessions.spawn` | Create a sub-agent session |
-| `camera.snap` | Capture a photo from a connected device |
-| `camera.clip` | Record a short video clip |
-| `location.get` | Get current location from a device |
-| `agents.list` | List available agents |
+| Tool              | Purpose                                                           |
+|-------------------|-------------------------------------------------------------------|
+| `system.run`      | Execute shell commands in a sandboxed PTY                         |
+| `browser.action`  | Automate a headless browser (navigate, click, screenshot, scrape) |
+| `canvas.eval`     | Update a live canvas UI (render HTML/JS content)                  |
+| `canvas.reset`    | Clear the canvas                                                  |
+| `messaging.send`  | Send a message via any connected channel                          |
+| `sessions.list`   | List available sessions                                           |
+| `sessions.get`    | Read session history                                              |
+| `sessions.update` | Modify session metadata                                           |
+| `sessions.spawn`  | Create a sub-agent session                                        |
+| `camera.snap`     | Capture a photo from a connected device                           |
+| `camera.clip`     | Record a short video clip                                         |
+| `location.get`    | Get current location from a device                                |
+| `agents.list`     | List available agents                                             |
 
 ### Tool Policy
 
@@ -307,12 +307,12 @@ Documents / Messages
 
 ### Embedding Providers
 
-| Provider | Type |
-|---|---|
-| OpenAI | Cloud API |
-| Google Gemini | Cloud API |
-| Voyage AI | Cloud API |
-| Ollama | Local inference |
+| Provider      | Type            |
+|---------------|-----------------|
+| OpenAI        | Cloud API       |
+| Google Gemini | Cloud API       |
+| Voyage AI     | Cloud API       |
+| Ollama        | Local inference |
 
 ---
 
@@ -365,15 +365,15 @@ Integrations with platform-specific event systems:
 
 Hooks are event handlers that execute at specific lifecycle points:
 
-| Hook Point | When It Fires |
-|---|---|
-| `beforeToolCall` | Before a tool is executed |
-| `afterToolCall` | After a tool completes |
-| `onMessage` | When a new inbound message arrives |
-| `onSession` | Session created, activated, or closed |
-| `onCompaction` | Before context window compaction |
-| `onGatewayStart` | Gateway process starts |
-| `configApply` | Configuration is changed |
+| Hook Point       | When It Fires                         |
+|------------------|---------------------------------------|
+| `beforeToolCall` | Before a tool is executed             |
+| `afterToolCall`  | After a tool completes                |
+| `onMessage`      | When a new inbound message arrives    |
+| `onSession`      | Session created, activated, or closed |
+| `onCompaction`   | Before context window compaction      |
+| `onGatewayStart` | Gateway process starts                |
+| `configApply`    | Configuration is changed              |
 
 Hooks can be **bundled** (built-in), registered by **plugins**, or defined as **custom modules**.
 
@@ -385,12 +385,12 @@ OpenClaw is designed for extensibility through a layered plugin architecture.
 
 ### Plugin Types
 
-| Type | Purpose | Examples |
-|---|---|---|
-| **Channel Plugin** | Add new messaging platforms | MS Teams, Matrix, Zalo |
-| **Skill Plugin** | Add tools and prompt fragments | Web search, email drafting, task management |
-| **Hook Plugin** | React to lifecycle events | Logging, analytics, custom routing |
-| **HTTP Plugin** | Add custom HTTP endpoints | OAuth callbacks, custom APIs |
+| Type               | Purpose                        | Examples                                    |
+|--------------------|--------------------------------|---------------------------------------------|
+| **Channel Plugin** | Add new messaging platforms    | MS Teams, Matrix, Zalo                      |
+| **Skill Plugin**   | Add tools and prompt fragments | Web search, email drafting, task management |
+| **Hook Plugin**    | React to lifecycle events      | Logging, analytics, custom routing          |
+| **HTTP Plugin**    | Add custom HTTP endpoints      | OAuth callbacks, custom APIs                |
 
 ### Skill Structure
 
@@ -436,18 +436,18 @@ Settings are resolved with the following precedence (highest first):
 
 ### Configuration Domains
 
-| Domain | What It Controls |
-|---|---|
-| `gateway` | Port, bind address, authentication |
-| `agents` | Agent definitions, personas, model assignments |
-| `channels` | Per-channel credentials and settings |
-| `models` | LLM provider configuration and failover |
-| `tools` | Tool permissions and restrictions |
-| `hooks` | Hook module paths |
-| `memory` | Embedding backend and search settings |
-| `sessions` | Retention, pruning, concurrency |
-| `cron` | Scheduled job definitions |
-| `plugins` | Plugin paths and configuration |
+| Domain     | What It Controls                               |
+|------------|------------------------------------------------|
+| `gateway`  | Port, bind address, authentication             |
+| `agents`   | Agent definitions, personas, model assignments |
+| `channels` | Per-channel credentials and settings           |
+| `models`   | LLM provider configuration and failover        |
+| `tools`    | Tool permissions and restrictions              |
+| `hooks`    | Hook module paths                              |
+| `memory`   | Embedding backend and search settings          |
+| `sessions` | Retention, pruning, concurrency                |
+| `cron`     | Scheduled job definitions                      |
+| `plugins`  | Plugin paths and configuration                 |
 
 ### Hot-Reload
 
@@ -483,17 +483,17 @@ OpenClaw supports multiple LLM providers with automatic failover.
 
 ### Supported Providers
 
-| Provider | Models |
-|---|---|
-| Anthropic | Claude family |
-| OpenAI | GPT-4, GPT-4o, o-series |
-| Google | Gemini family |
-| Ollama | Any local model |
-| Together AI | Open-source models |
-| OpenRouter | Multi-provider proxy |
-| AWS Bedrock | Managed models |
-| GitHub Copilot | Via proxy extension |
-| *Others* | Via plugin system |
+| Provider       | Models                  |
+|----------------|-------------------------|
+| Anthropic      | Claude family           |
+| OpenAI         | GPT-4, GPT-4o, o-series |
+| Google         | Gemini family           |
+| Ollama         | Any local model         |
+| Together AI    | Open-source models      |
+| OpenRouter     | Multi-provider proxy    |
+| AWS Bedrock    | Managed models          |
+| GitHub Copilot | Via proxy extension     |
+| *Others*       | Via plugin system       |
 
 ### Auth Profiles
 
@@ -519,12 +519,12 @@ When a model call fails:
 
 ### Authentication
 
-| Boundary | Mechanism |
-|---|---|
-| Gateway clients | Token-based (`OPENCLAW_GATEWAY_TOKEN`) or password |
+| Boundary        | Mechanism                                            |
+|-----------------|------------------------------------------------------|
+| Gateway clients | Token-based (`OPENCLAW_GATEWAY_TOKEN`) or password   |
 | Channel senders | DM pairing policy (pairing code, allowlist, or open) |
-| Webhooks | Bearer token per hook |
-| Remote access | Tailscale identity or TLS + token |
+| Webhooks        | Bearer token per hook                                |
+| Remote access   | Tailscale identity or TLS + token                    |
 
 ### DM Pairing Policy
 
@@ -635,16 +635,16 @@ Agent Execution Loop (same as steps 5-10 above)
 
 ## Glossary
 
-| Term | Definition |
-|---|---|
-| **Gateway** | The central WebSocket server that orchestrates all subsystems |
-| **Channel** | A pluggable adapter for an external messaging platform |
-| **Agent** | A configured AI persona with its own model, tools, and sessions |
-| **Session** | A persistent multi-turn conversation between a user and an agent |
-| **Skill** | An installable package that adds tools and/or prompt instructions to an agent |
-| **Hook** | An event handler that executes at a specific lifecycle point |
-| **Plugin** | A loadable module that extends OpenClaw (channels, skills, hooks, or HTTP endpoints) |
-| **Auth Profile** | A credential set for connecting to an LLM provider |
-| **Compaction** | The process of summarizing old conversation turns to fit the context window |
-| **Pairing** | The security handshake that authorizes a new sender to interact with an agent |
-| **Node** | A device (phone, desktop) connected to the gateway for hardware access |
+| Term             | Definition                                                                           |
+|------------------|--------------------------------------------------------------------------------------|
+| **Gateway**      | The central WebSocket server that orchestrates all subsystems                        |
+| **Channel**      | A pluggable adapter for an external messaging platform                               |
+| **Agent**        | A configured AI persona with its own model, tools, and sessions                      |
+| **Session**      | A persistent multi-turn conversation between a user and an agent                     |
+| **Skill**        | An installable package that adds tools and/or prompt instructions to an agent        |
+| **Hook**         | An event handler that executes at a specific lifecycle point                         |
+| **Plugin**       | A loadable module that extends OpenClaw (channels, skills, hooks, or HTTP endpoints) |
+| **Auth Profile** | A credential set for connecting to an LLM provider                                   |
+| **Compaction**   | The process of summarizing old conversation turns to fit the context window          |
+| **Pairing**      | The security handshake that authorizes a new sender to interact with an agent        |
+| **Node**         | A device (phone, desktop) connected to the gateway for hardware access               |

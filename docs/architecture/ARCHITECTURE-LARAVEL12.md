@@ -6,18 +6,18 @@ This document translates the [language-independent OpenClaw architecture](./ARCH
 
 ## Technology Stack
 
-| Layer | Technology |
-|---|---|
-| **Runtime** | FrankenPHP (PHP 8.4+ with built-in app server) |
-| **Framework** | Laravel 12 |
-| **Database** | SQLite (local, zero-config) |
-| **Queue / Workers** | Laravel Queue with `database` driver (SQLite) |
-| **WebSocket** | Laravel Reverb (native PHP WebSocket server on FrankenPHP) |
-| **Scheduler** | Laravel `schedule:work` (no system cron needed) |
-| **Cache** | SQLite or file-based (via Laravel Cache) |
-| **Search** | Laravel Scout + SQLite FTS5 (keyword) + sqlite-vec (vector) |
-| **Go Modules** | Optional sidecar binaries for: LLM streaming, browser automation, long-lived channel connections |
-| **CLI** | Laravel Artisan commands |
+| Layer               | Technology                                                                                       |
+|---------------------|--------------------------------------------------------------------------------------------------|
+| **Runtime**         | FrankenPHP (PHP 8.4+ with built-in app server)                                                   |
+| **Framework**       | Laravel 12                                                                                       |
+| **Database**        | SQLite (local, zero-config)                                                                      |
+| **Queue / Workers** | Laravel Queue with `database` driver (SQLite)                                                    |
+| **WebSocket**       | Laravel Reverb (native PHP WebSocket server on FrankenPHP)                                       |
+| **Scheduler**       | Laravel `schedule:work` (no system cron needed)                                                  |
+| **Cache**           | SQLite or file-based (via Laravel Cache)                                                         |
+| **Search**          | Laravel Scout + SQLite FTS5 (keyword) + sqlite-vec (vector)                                      |
+| **Go Modules**      | Optional sidecar binaries for: LLM streaming, browser automation, long-lived channel connections |
+| **CLI**             | Laravel Artisan commands                                                                         |
 
 ### Why FrankenPHP?
 
@@ -220,33 +220,33 @@ openclaw-laravel/
 
 ## Concept Mapping: OpenClaw → Laravel
 
-| OpenClaw Concept | Laravel Equivalent | Notes |
-|---|---|---|
-| **Gateway** (WebSocket server) | **Laravel Reverb** | Native PHP WebSocket server, runs on FrankenPHP worker mode |
-| **JSON-RPC protocol** | **Laravel Broadcasting** (events over WebSocket) | Private/presence channels with typed events |
-| **Channel Plugin** | **Contract + Driver** (`ChannelDriver` interface) | Like Mail/Notification drivers — swap implementations |
-| **Inbound pipeline** | **Event + Listener chain** | `MessageReceived` event → ordered listeners |
-| **Outbound delivery** | **Queued Job** (`DeliverOutboundMessage`) | Async, retryable, per-channel formatting |
-| **Agent Runtime** | **Service class** (`AgentRunner`) | Bound in container, injected where needed |
-| **Session (conversation)** | **Eloquent Model** (`Session` + `Turn`) | Relational: `sessions` has many `turns` |
-| **Append-only log** | **Immutable `Turn` inserts** | Turns are insert-only, never updated |
-| **System prompt** | **Builder pattern** (`SystemPromptBuilder`) | Composes fragments from config, skills, tools |
-| **Tool** | **Contract + class** (`Tool` interface) | Registry discovers tools, executor dispatches |
-| **Tool policy** | **Config + Gate** | `config/tools.php` + Laravel `Gate::allows('use-tool', $tool)` |
-| **Memory / embeddings** | **Service + SQLite-vec** | `EmbeddingService` + raw SQLite `sqlite-vec` extension |
-| **Hybrid search** | **Scout + FTS5 + vectors** | Laravel Scout driver for FTS5, custom vector query |
-| **Cron jobs** | **Laravel Scheduler** (`schedule:work`) | Define in `routes/console.php`, stored in DB |
-| **Webhooks** | **Controller + Middleware** | `WebhookController` with `ValidateWebhookToken` |
-| **Hooks (lifecycle events)** | **Laravel Events / Observers** | `ToolExecuting`, `SessionCreated`, etc. |
-| **Plugin system** | **Laravel Package + ServiceProvider** | Auto-discovered via `PluginServiceProvider` |
-| **Skill** | **Artisan-installable package** | Config + prompt fragment + tool class |
-| **Config hot-reload** | **Artisan command + event** | `config:reload` clears cache, fires `ConfigChanged` |
-| **Auth profiles** | **Eloquent Model** (`AuthProfile`) | Per-provider credentials with cooldown tracking |
-| **Model failover** | **Service** (`ModelRouter`) | Try primary → catch → rotate → retry |
-| **DM pairing** | **Eloquent Model + Middleware** | `PairedSender` model, `EnforceAllowlist` listener |
-| **Secret management** | **Laravel `.env` + `Crypt`** | `.env` for keys, `Crypt::encrypt()` for stored tokens |
-| **Multi-agent** | **Polymorphic config** | Each `Agent` model has own settings, sessions, skills |
-| **Go sidecar** | **Separate process** (managed by Supervisor/systemd) | Communicates via HTTP/gRPC/Unix socket to Laravel |
+| OpenClaw Concept               | Laravel Equivalent                                   | Notes                                                          |
+|--------------------------------|------------------------------------------------------|----------------------------------------------------------------|
+| **Gateway** (WebSocket server) | **Laravel Reverb**                                   | Native PHP WebSocket server, runs on FrankenPHP worker mode    |
+| **JSON-RPC protocol**          | **Laravel Broadcasting** (events over WebSocket)     | Private/presence channels with typed events                    |
+| **Channel Plugin**             | **Contract + Driver** (`ChannelDriver` interface)    | Like Mail/Notification drivers — swap implementations          |
+| **Inbound pipeline**           | **Event + Listener chain**                           | `MessageReceived` event → ordered listeners                    |
+| **Outbound delivery**          | **Queued Job** (`DeliverOutboundMessage`)            | Async, retryable, per-channel formatting                       |
+| **Agent Runtime**              | **Service class** (`AgentRunner`)                    | Bound in container, injected where needed                      |
+| **Session (conversation)**     | **Eloquent Model** (`Session` + `Turn`)              | Relational: `sessions` has many `turns`                        |
+| **Append-only log**            | **Immutable `Turn` inserts**                         | Turns are insert-only, never updated                           |
+| **System prompt**              | **Builder pattern** (`SystemPromptBuilder`)          | Composes fragments from config, skills, tools                  |
+| **Tool**                       | **Contract + class** (`Tool` interface)              | Registry discovers tools, executor dispatches                  |
+| **Tool policy**                | **Config + Gate**                                    | `config/tools.php` + Laravel `Gate::allows('use-tool', $tool)` |
+| **Memory / embeddings**        | **Service + SQLite-vec**                             | `EmbeddingService` + raw SQLite `sqlite-vec` extension         |
+| **Hybrid search**              | **Scout + FTS5 + vectors**                           | Laravel Scout driver for FTS5, custom vector query             |
+| **Cron jobs**                  | **Laravel Scheduler** (`schedule:work`)              | Define in `routes/console.php`, stored in DB                   |
+| **Webhooks**                   | **Controller + Middleware**                          | `WebhookController` with `ValidateWebhookToken`                |
+| **Hooks (lifecycle events)**   | **Laravel Events / Observers**                       | `ToolExecuting`, `SessionCreated`, etc.                        |
+| **Plugin system**              | **Laravel Package + ServiceProvider**                | Auto-discovered via `PluginServiceProvider`                    |
+| **Skill**                      | **Artisan-installable package**                      | Config + prompt fragment + tool class                          |
+| **Config hot-reload**          | **Artisan command + event**                          | `config:reload` clears cache, fires `ConfigChanged`            |
+| **Auth profiles**              | **Eloquent Model** (`AuthProfile`)                   | Per-provider credentials with cooldown tracking                |
+| **Model failover**             | **Service** (`ModelRouter`)                          | Try primary → catch → rotate → retry                           |
+| **DM pairing**                 | **Eloquent Model + Middleware**                      | `PairedSender` model, `EnforceAllowlist` listener              |
+| **Secret management**          | **Laravel `.env` + `Crypt`**                         | `.env` for keys, `Crypt::encrypt()` for stored tokens          |
+| **Multi-agent**                | **Polymorphic config**                               | Each `Agent` model has own settings, sessions, skills          |
+| **Go sidecar**                 | **Separate process** (managed by Supervisor/systemd) | Communicates via HTTP/gRPC/Unix socket to Laravel              |
 
 ---
 
@@ -977,15 +977,15 @@ class WebhookController extends Controller
 
 The OpenClaw hook system maps directly to **Laravel Events**:
 
-| OpenClaw Hook | Laravel Event | Typical Listener |
-|---|---|---|
-| `beforeToolCall` | `ToolExecuting` | Log, validate, gate approval |
-| `afterToolCall` | `ToolExecuted` | Log, post-process results |
-| `onMessage` | `MessageReceived` | Allowlist, routing, debounce |
-| `onSession` | `SessionCreated` / `SessionClosed` | Analytics, cleanup |
-| `onCompaction` | `CompactionStarting` | Backup, metrics |
-| `onGatewayStart` | `GatewayStarted` | Warm caches, verify channels |
-| `configApply` | `ConfigChanged` | Reload drivers, notify clients |
+| OpenClaw Hook    | Laravel Event                      | Typical Listener               |
+|------------------|------------------------------------|--------------------------------|
+| `beforeToolCall` | `ToolExecuting`                    | Log, validate, gate approval   |
+| `afterToolCall`  | `ToolExecuted`                     | Log, post-process results      |
+| `onMessage`      | `MessageReceived`                  | Allowlist, routing, debounce   |
+| `onSession`      | `SessionCreated` / `SessionClosed` | Analytics, cleanup             |
+| `onCompaction`   | `CompactionStarting`               | Backup, metrics                |
+| `onGatewayStart` | `GatewayStarted`                   | Warm caches, verify channels   |
+| `configApply`    | `ConfigChanged`                    | Reload drivers, notify clients |
 
 Plugins register their listeners in their own `ServiceProvider`:
 
@@ -1445,17 +1445,17 @@ For subsystems where PHP's request-response lifecycle is limiting, **Go sidecar 
 
 ### When to Use Go vs PHP
 
-| Concern | PHP (Laravel) | Go (Sidecar) |
-|---|---|---|
-| HTTP request handling | Yes | — |
-| Database operations | Yes | — |
-| Queue processing | Yes | — |
-| Event broadcasting | Yes (Reverb) | — |
-| Cron scheduling | Yes | — |
-| LLM streaming (SSE) | Possible but blocking | Better: true async I/O |
-| Persistent WebSocket clients | Limited by worker lifecycle | Better: goroutines |
-| Browser automation | Via HTTP to sidecar | Better: native CDP |
-| CPU-heavy embedding | Possible | Better: parallel processing |
+| Concern                      | PHP (Laravel)               | Go (Sidecar)                |
+|------------------------------|-----------------------------|-----------------------------|
+| HTTP request handling        | Yes                         | —                           |
+| Database operations          | Yes                         | —                           |
+| Queue processing             | Yes                         | —                           |
+| Event broadcasting           | Yes (Reverb)                | —                           |
+| Cron scheduling              | Yes                         | —                           |
+| LLM streaming (SSE)          | Possible but blocking       | Better: true async I/O      |
+| Persistent WebSocket clients | Limited by worker lifecycle | Better: goroutines          |
+| Browser automation           | Via HTTP to sidecar         | Better: native CDP          |
+| CPU-heavy embedding          | Possible                    | Better: parallel processing |
 
 ### Communication Pattern
 
@@ -1618,23 +1618,23 @@ php artisan reverb:start &
 
 The Artisan CLI replaces the OpenClaw CLI commands:
 
-| OpenClaw CLI | Artisan Command | Description |
-|---|---|---|
-| `openclaw gateway` | `php artisan gateway:serve` | Start FrankenPHP + Reverb + queue + scheduler |
-| `openclaw agent` | `php artisan agent:chat` | Interactive agent conversation in terminal |
-| `openclaw message send` | `php artisan message:send {channel} {to} {text}` | Send a message via channel |
-| `openclaw channels` | `php artisan channel:list` | Show channel statuses |
-| `openclaw channels auth` | `php artisan channel:auth {type}` | Authenticate a channel |
-| `openclaw config` | `php artisan config:show` | Display current configuration |
-| `openclaw config reload` | `php artisan config:reload` | Hot-reload configuration |
-| `openclaw cron` | `php artisan cron:list` | List scheduled jobs |
-| `openclaw memory` | `php artisan memory:search {query}` | Semantic search |
-| `openclaw memory reindex` | `php artisan memory:reindex` | Re-embed all content |
-| `openclaw skills install` | `php artisan skill:install {name}` | Install a skill |
-| `openclaw plugins` | `php artisan plugin:list` | List installed plugins |
-| `openclaw pairing approve` | `php artisan pairing:approve {channel} {code}` | Approve a sender |
-| `openclaw doctor` | `php artisan doctor` | Run diagnostics |
-| `openclaw update` | `composer update openclaw/openclaw` | Update framework |
+| OpenClaw CLI               | Artisan Command                                  | Description                                   |
+|----------------------------|--------------------------------------------------|-----------------------------------------------|
+| `openclaw gateway`         | `php artisan gateway:serve`                      | Start FrankenPHP + Reverb + queue + scheduler |
+| `openclaw agent`           | `php artisan agent:chat`                         | Interactive agent conversation in terminal    |
+| `openclaw message send`    | `php artisan message:send {channel} {to} {text}` | Send a message via channel                    |
+| `openclaw channels`        | `php artisan channel:list`                       | Show channel statuses                         |
+| `openclaw channels auth`   | `php artisan channel:auth {type}`                | Authenticate a channel                        |
+| `openclaw config`          | `php artisan config:show`                        | Display current configuration                 |
+| `openclaw config reload`   | `php artisan config:reload`                      | Hot-reload configuration                      |
+| `openclaw cron`            | `php artisan cron:list`                          | List scheduled jobs                           |
+| `openclaw memory`          | `php artisan memory:search {query}`              | Semantic search                               |
+| `openclaw memory reindex`  | `php artisan memory:reindex`                     | Re-embed all content                          |
+| `openclaw skills install`  | `php artisan skill:install {name}`               | Install a skill                               |
+| `openclaw plugins`         | `php artisan plugin:list`                        | List installed plugins                        |
+| `openclaw pairing approve` | `php artisan pairing:approve {channel} {code}`   | Approve a sender                              |
+| `openclaw doctor`          | `php artisan doctor`                             | Run diagnostics                               |
+| `openclaw update`          | `composer update openclaw/openclaw`              | Update framework                              |
 
 ---
 
@@ -1711,22 +1711,22 @@ RunAgentSession::dispatch($session, $payload)
 
 ## Concept Glossary (Laravel Terms)
 
-| OpenClaw Term | Laravel Equivalent |
-|---|---|
-| Gateway | FrankenPHP + Reverb + Queue Worker + Scheduler |
-| Channel Plugin | `ChannelDriver` implementation (Manager pattern) |
-| Agent | `Agent` Eloquent Model + config |
-| Session | `Session` Eloquent Model |
-| Turn (append-only log) | `Turn` Eloquent Model (immutable inserts) |
-| Hook | Laravel Event + Listener |
-| Tool | Class implementing `Tool` contract, registered in `ToolRegistry` |
-| Skill | Installable package: tool class + prompt fragment |
-| Plugin | Laravel Package with its own `ServiceProvider` |
-| System Prompt | `SystemPromptBuilder` service |
-| Model Failover | `ModelRouter` service + `AuthProfile` model |
-| Cron Job | `CronJob` model + Laravel Scheduler |
-| Webhook | Route + Controller + `ValidateWebhookToken` middleware |
-| Pairing | `PairedSender` model + `EnforceAllowlist` listener |
-| Memory | `EmbeddingService` + `VectorStore` + `HybridSearch` services |
-| Config hot-reload | `config:reload` Artisan command + `ConfigChanged` event |
-| Go Sidecar | Separate binary, managed by Supervisor, talks HTTP to Laravel |
+| OpenClaw Term          | Laravel Equivalent                                               |
+|------------------------|------------------------------------------------------------------|
+| Gateway                | FrankenPHP + Reverb + Queue Worker + Scheduler                   |
+| Channel Plugin         | `ChannelDriver` implementation (Manager pattern)                 |
+| Agent                  | `Agent` Eloquent Model + config                                  |
+| Session                | `Session` Eloquent Model                                         |
+| Turn (append-only log) | `Turn` Eloquent Model (immutable inserts)                        |
+| Hook                   | Laravel Event + Listener                                         |
+| Tool                   | Class implementing `Tool` contract, registered in `ToolRegistry` |
+| Skill                  | Installable package: tool class + prompt fragment                |
+| Plugin                 | Laravel Package with its own `ServiceProvider`                   |
+| System Prompt          | `SystemPromptBuilder` service                                    |
+| Model Failover         | `ModelRouter` service + `AuthProfile` model                      |
+| Cron Job               | `CronJob` model + Laravel Scheduler                              |
+| Webhook                | Route + Controller + `ValidateWebhookToken` middleware           |
+| Pairing                | `PairedSender` model + `EnforceAllowlist` listener               |
+| Memory                 | `EmbeddingService` + `VectorStore` + `HybridSearch` services     |
+| Config hot-reload      | `config:reload` Artisan command + `ConfigChanged` event          |
+| Go Sidecar             | Separate binary, managed by Supervisor, talks HTTP to Laravel    |
