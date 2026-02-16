@@ -31,6 +31,8 @@ My goal with Clarabot is to test out 2 big ideas:
 
 Develop an application that can enhance/bugfix, test and deploy itself.
 
+- the [self-improving deployment process](a-i-assistant/SELF-IMPROVING-PROCESS.md) describes the 7-stage pipeline from intent to production
+
 !!! example "Example 1"
 
      - send a voice message to Clarabot: "Hey Clarabot, you already support WhatsApp and Telegram messaging. Please develop support for XMPP."
