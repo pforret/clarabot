@@ -1,33 +1,4 @@
-# pforret/clarabot
-
-My goal with Clarabot is to test out 2 big ideas:
-
-## Build an OpenClaw equivalent with Laravel 12
-
-- based on the [architecture of OpenClaw](a-i-assistant/OPENCLAW_ARCHITECTURE.md)
-- create the [same functionality in Laravel 12](a-i-assistant/ARCHITECTURE-LARAVEL12.md)
-
-| OpenClaw Term          | Laravel Equivalent                                               |
-|------------------------|------------------------------------------------------------------|
-| Gateway                | FrankenPHP + Reverb + Queue Worker + Scheduler                   |
-| Channel Plugin         | `ChannelDriver` implementation (Manager pattern)                 |
-| Agent                  | `Agent` Eloquent Model + config                                  |
-| Session                | `Session` Eloquent Model                                         |
-| Turn (append-only log) | `Turn` Eloquent Model (immutable inserts)                        |
-| Hook                   | Laravel Event + Listener                                         |
-| Tool                   | Class implementing `Tool` contract, registered in `ToolRegistry` |
-| Skill                  | Installable package: tool class + prompt fragment                |
-| Plugin                 | Laravel Package with its own `ServiceProvider`                   |
-| System Prompt          | `SystemPromptBuilder` service                                    |
-| Model Failover         | `ModelRouter` service + `AuthProfile` model                      |
-| Cron Job               | `CronJob` model + Laravel Scheduler                              |
-| Webhook                | Route + Controller + `ValidateWebhookToken` middleware           |
-| Pairing                | `PairedSender` model + `EnforceAllowlist` listener               |
-| Memory                 | `EmbeddingService` + `VectorStore` + `HybridSearch` services     |
-| Config hot-reload      | `config:reload` Artisan command + `ConfigChanged` event          |
-| Go Sidecar             | Separate binary, managed by Supervisor, talks HTTP to Laravel    |
-
-## Build a self-improving application
+# Build a self-improving application
 
 Develop an application that can enhance/bugfix, test and deploy itself.
 

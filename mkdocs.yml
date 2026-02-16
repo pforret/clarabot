@@ -20,7 +20,7 @@ theme:
     - navigation.tracking
     - search.highlight
     - search.suggest
-    - toc.integrate
+#    - toc.integrate
 
 markdown_extensions:
   - admonition
